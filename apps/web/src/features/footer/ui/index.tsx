@@ -23,12 +23,12 @@ const navLinks: FooterLink[] = [
 
 const socialLinks: (FooterLink & { icon: React.ReactNode })[] = [
   {
-    href: "#",
+    href: "https://github.com/tsu-moe",
     icon: <XIcon className="size-3" />,
     label: m.footer__x(),
   },
   {
-    href: "#",
+    href: "https://github.com/tsu-moe/tsu-stack",
     icon: <IconBrandGithub className="size-4" />,
     label: m.footer__github(),
   },
