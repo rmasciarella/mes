@@ -1,0 +1,52 @@
+{
+  // use LF line endings
+  "files.eol": "\n",
+
+  // Terminal Suggestions
+  "terminal.integrated.suggest.enabled": true,
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.shellIntegration.environmentReporting": true,
+  "terminal.integrated.suggest.quickSuggestions": {
+    "commands": "on",
+    "arguments": "on",
+    "unknown": "off"
+  },
+
+  // Prefer non-relative (../ or ./) imports to be auto-imported as absolute (@/ or package name)
+  "ts.preferences.importModuleSpecifier": "non-relative",
+  "js.preferences.importModuleSpecifier": "non-relative",
+  "js.preferences.importModuleSpecifierEnding": "minimal",
+  "ts.preferences.importModuleSpecifierEnding": "minimal",
+
+  // Tanstack Start-specific settings
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
+
+  // Vite Plus Defaults
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "oxc.fmt.configPath": "./vite.config.ts",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.format.oxc": "always",
+    "source.fixAll.oxc": "always"
+  },
+
+  "json.schemas": [
+    {
+      "fileMatch": ["components.json"],
+      "url": "https://ui.shadcn.com/schema.json"
+    },
+    {
+      "fileMatch": ["packages/i18n/messages/*.json"],
+      "url": "https://inlang.com/schema/inlang-message-format"
+    }
+  ]
+}
