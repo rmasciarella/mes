@@ -1,0 +1,39 @@
+{
+  "name": "@tsu-stack/server",
+  "type": "module",
+  "main": "src/index.ts",
+  "imports": {
+    "#@/*": "./src/*.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "compile": "cross-env BUILD_EXE=true vp pack",
+    "dev": "node --import tsx --watch src/index.ts",
+    "start": "node .output/index.mjs"
+  },
+  "dependencies": {
+    "@hono/node-server": "catalog:",
+    "@orpc/json-schema": "catalog:",
+    "@orpc/openapi": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/zod": "catalog:",
+    "@tsu-stack/api": "workspace:*",
+    "@tsu-stack/auth": "workspace:*",
+    "@tsu-stack/db": "workspace:*",
+    "@tsu-stack/env": "workspace:*",
+    "@tsu-stack/logger": "workspace:*",
+    "better-auth": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@tsu-stack/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "cross-env": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  }
+}

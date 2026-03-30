@@ -1,0 +1,343 @@
+# tsu-stack
+
+<h1 align="center">
+    <img width="120" height="120" src="https://github.com/tsu-moe/tsu-stack/blob/main/apps/web/public/logo192.png?raw=true" alt="tsu!stack Logo"><br>
+    tsu!stack
+</h1>
+
+<p align="center">
+   <img src="https://img.shields.io/badge/NodeJS-25.8.2-green" alt="NodeJS version badge">
+   <img src="https://img.shields.io/github/license/tsu-moe/tsu-stack" alt="License badge">
+   <img src="https://img.shields.io/github/last-commit/tsu-moe/tsu-stack" alt="Last commit badge">
+   <img src="https://img.shields.io/github/stars/tsu-moe/tsu-stack?style=flat" alt="GitHub stars badge">
+   <img src="https://img.shields.io/github/forks/tsu-moe/tsu-stack?style=flat" alt="GitHub forks badge">
+   <img src="https://img.shields.io/github/issues/tsu-moe/tsu-stack" alt="GitHub issues badge">
+   <img src="https://img.shields.io/github/issues-pr/tsu-moe/tsu-stack" alt="GitHub pull requests badge">
+</p>
+
+# tsu!stack
+
+An opinionated Vite Plus (Vite+) monorepo featuring Tanstack Start, Paraglide.js (i18n), Hono, oRPC, drizzle-orm, better-auth, and more.
+
+<p align="center">
+  <img src="https://github.com/tsu-moe/tsu-stack/blob/main/apps/web/public/og/index.png?raw=true" alt="tsu!stack Screenshot" width="800" height="420">
+</p>
+
+<p align="center">
+  <a href="http://tsu-stack.tsu.moe/web" target="_blank">Live Demo (with Dockerfiles)</a> | <a href="http://tsu-stack-coolify.tsu.moe/web" target="_blank">Live Demo (with Coolify Docker Compose)</a>
+</p>
+
+## Table of Contents
+
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running with Docker Locally](#running-with-docker-locally)
+- [Deployment](#deployment)
+  - [Coolify](#coolify)
+    - [Separate Dockerfiles](#separate-dockerfiles)
+      - [Server Deployment](#server-deployment)
+      - [Web Deployment](#web-deployment)
+    - [Docker Compose](#docker-compose)
+  - [Deploying to Other Platforms](#deploying-to-other-platforms)
+  - [Subpath Support](#subpath-support)
+- [Environment Variables](#environment-variables)
+  - [Server](#server)
+  - [Web](#web)
+- [Merging Server to Web App](#merging-server-to-web-app)
+  - [Resource Usage](#resource-usage)
+- [Issue Watchlist](#issue-watchlist)
+  - [Pitfalls](#pitfalls)
+- [Contributing](#contributing)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** ≥ 25 - install via [Node.js official website](https://nodejs.org/) or [nvm](https://github.com/nvm-sh/nvm)
+- **pnpm** ≥ 10 - install via `npm install -g pnpm`
+- **Docker** - required for the local PostgreSQL database
+
+### Installation
+
+1. **Clone the repository and install dependencies:**
+
+   ```bash
+   git clone https://github.com/tsu-moe/tsu-stack.git
+   cd tsu-stack
+   vp install
+   ```
+
+2. **Copy the environment files:**
+
+   ```bash
+   cp packages/env/.env.example packages/env/.env
+   ```
+
+3. **Generate a Better-Auth secret** and set it as `BETTER_AUTH_SECRET` in `packages/env/.env`:
+
+   ```bash
+   vp run auth:secret
+   ```
+
+4. **Start the local PostgreSQL database:**
+
+   ```bash
+   vp run db:dev:start
+   # you can stop it later with vp run db:dev:stop
+   ```
+
+5. **Migrate the database**:
+
+   ```bash
+   vp run db:migrate
+   ```
+
+6. **Start all development servers:**
+
+   ```bash
+   vp run dev
+   ```
+
+   The following applications will be running:
+   - **Web App**: `http://localhost:3000/web`
+   - **Server**: `http://localhost:5000/server`
+
+> [!TIP]
+> Run `vp run fix` to lint, format, and type-check your code. The pre-commit hook runs both automatically on every commit.
+
+### Running with Docker Locally
+
+As an alternative to `vp run dev`, you can run the full stack inside Docker using the local compose file:
+
+```bash
+cp .env.docker.example .env.docker # And set environment variables as needed
+vp run docker:up
+vp run docker:up:build # OR: force a rebuild when you make changes to the code
+```
+
+## Deployment
+
+This project is designed to be deployed as separate applications for the server and web frontend. Below are the recommended deployment strategies and configurations.
+
+### Coolify
+
+Coolify can be used to deploy the server and web applications. Choose a strategy and follow the steps below to configure each app:
+
+#### Separate Dockerfiles
+
+> [!NOTE]
+> This approach retains rolling updates in Coolify and has minimal downtime, but it is harder to scale compared to Docker Compose.
+
+##### Server Deployment
+
+1. **Base Directory**: Set to `/apps/server`.
+2. **Domain**: Assign a domain, e.g., `https://example.com/server`.
+3. **Port**: Expose port `5000`.
+
+##### Web Deployment
+
+1. **Base Directory**: Set to `/apps/web`.
+2. **Domain**: Assign a domain, e.g., `https://example.com/web`.
+3. **Port**: Expose port `3000`.
+
+> [!CAUTION]
+> Ensure that the `Strip Prefixes` option is unchecked in the `Advanced` settings to avoid issues with custom base paths.
+
+Finally, set any required [environment variables](#environment-variables) in the "Environment Variables" tab for each application and press the "Deploy" button to start the deployment process.
+
+#### Docker Compose
+
+> [!NOTE]
+> You can scale services using replicas - e.g. `docker-compose up --scale server=3` for the server.
+
+1. When creating a new application in Coolify, select "Private Repository (with GitHub App) and select your repository with your tsu-stack app.
+2. Next, change the "Build Pack" to "Docker Compose" and set the "Docker Compose Location" to `/docker-compose.coolify.yaml`.
+3. Refer to [Server Deployment](#server-deployment) and [Web Deployment](#web-deployment) sections above for domain configurations.
+
+- you need to explicitly bind the port in the domain since Docker Compose doesn't have `Expose Port`, for example: `https://example.com:3000/web` for the web app and `https://example.com:5000/server` for the server.
+
+4. Set any required [environment variables](#environment-variables) in the "Environment Variables" tab.
+5. Press the "Deploy" button to start the deployment process.
+
+> [!CAUTION]
+> Ensure that the `Strip Prefixes` option is unchecked in the `Advanced` settings to avoid issues with custom base paths.
+
+### Deploying to Other Platforms
+
+TanStack Start uses [Nitro](https://nitro.build) as its server engine, which means the **web app** can be deployed to any platform Nitro supports out of the box - Cloudflare Workers, Vercel, AWS Lambda, Deno Deploy, and [many more](https://nitro.build/deploy). Configure the target by setting the appropriate Nitro preset in `apps/web/vite.config.ts`.
+
+> [!CAUTION]
+> The **server** (`apps/server`) is a standard Node.js/Hono server and is not compatible with edge runtimes like Cloudflare Workers. It must be deployed to a Node.js-capable environment (e.g. a VPS, container, or serverless platform with Node.js support). This is by design - the dedicated Node.js server is more resource-efficient for database-heavy workloads.
+
+### Subpath Support
+
+To serve your applications on a subpath in (e.g., `https://example.com/app`), configure the `VITE_SERVER_URL` and `VITE_WEB_URL` environment variables to include the subpath. For example:
+
+- **Web App Domain**: `https://example.com/app`
+- **Server Domain**: `https://example.com/server`
+
+The applications will automatically detect the base path and adjust their routing accordingly.
+
+## Environment Variables
+
+### Server
+
+For the Hono server, use the following environment variables:
+
+| Variable Name          | Required | Default Value | Description                                                       |
+| ---------------------- | -------- | ------------- | ----------------------------------------------------------------- |
+| `VITE_SERVER_URL`      | ✅       | -             | Base URL for the server.                                          |
+| `VITE_WEB_URL`         | ✅       | -             | Base URL for the web app.                                         |
+| `BETTER_AUTH_SECRET`   | ✅       | -             | Secret key for Better-Auth. Generate with `pnpm run auth:secret`. |
+| `DATABASE_URL`         | ✅       | -             | PostgreSQL connection string.                                     |
+| `ENABLE_OPEN_API_DOCS` | ❌       | `false`       | Enable OpenAPI `/docs` endpoint.                                  |
+
+### Web
+
+For the web app, use the following environment variables:
+
+| Variable Name        | Required | Default Value | Description                                                       |
+| -------------------- | -------- | ------------- | ----------------------------------------------------------------- |
+| `VITE_SERVER_URL`    | ✅       | -             | Base URL for the server.                                          |
+| `VITE_WEB_URL`       | ✅       | -             | Base URL for the web app.                                         |
+| `BETTER_AUTH_SECRET` | ✅       | -             | Secret key for Better-Auth. Generate with `pnpm run auth:secret`. |
+| `DATABASE_URL`       | ✅       | -             | PostgreSQL connection string.                                     |
+| `VITE_IMGPROXY_URL`  | ❌       | -             | URL for image optimization.                                       |
+
+## Merging Server to Web App
+
+Since Hono is built on web standards, you can mount the Hono App into the Tanstack Start web server.
+
+```json5
+// apps/web/package.json
+"dependencies": {
+  // ...
+  "react-use-measure": "catalog:",
+  "server": "workspace:*",
+  "sharp": "catalog:",
+  // ...
+}
+```
+
+Then we can import our app from the server package.
+
+```ts
+// apps/web/src/routes/api/$index.tsx
+import { createFileRoute } from "@tanstack/react-router";
+import { app } from "server";
+
+export const Route = createFileRoute("/api/$")({
+  server: {
+    handlers: {
+      GET: ({ request }) => {
+        return app.fetch(request);
+      },
+
+      POST: ({ request }) => {
+        return app.fetch(request);
+      },
+    },
+  },
+});
+```
+
+Then merge your web environment variables with the server ones and make sure VITE_SERVER_URL points web domain's subpath.
+
+```bash
+VITE_SERVER_URL=http://localhost:3000/server
+VITE_WEB_URL=http://localhost:3000/web
+```
+
+You will also need to adjust the `getConnInfo` import to match your runtime environment.
+
+```diff
+-import { getConnInfo } from '@hono/node-server/conninfo'
++import { getConnInfo } from 'hono/vercel'
+```
+
+> [!IMPORTANT]
+> `hono/vercel` works in any environment, but it may not have all the information needed for the logger middleware.
+
+Then lastly, remove the `serve()` call in `apps/server/src/index.ts` since the Hono app is now being served by the Tanstack Start server.
+
+```diff
+void (async () => {
+  await migrateDatabase()
+
+-  serve(
+-    {
+-      fetch: app.fetch,
+-      port: 5000,
+-    },
+-    (info) => {
+-      logger.info(`Server is running on http://localhost:${info.port}${new URL(apiEnvServer.VITE_SERVER_URL).pathname}`)
+-    },
+-  )
+})()
+```
+
+> [!NOTE]
+> You may want to refactor the logging middlewares since the Tanstack Start server also logs incoming/outgoing requests, similar to the Hono app's middleware.
+
+> [!CAUTION]
+> You may also need to adjust your Docker Compose file and the `apps/web/Dockerfile` to include build args needed in the server app such as `DATABASE_URL` and handle other environment variables.
+
+### Resource Usage
+
+When mounting the Hono app into the Tanstack Start web server, you will save the resources of running a separate Node.js server
+
+But keep in mind that all API requests will now consume resources from the web server container, leading to the web server being less responsive under heavy API load.
+
+However, the benefit is singular deployments and lower memory usage for websites that don't receive much traffic (around 70MB with a single app vs 130MB when separated on idle).
+
+> [!NOTE]
+> I personally keep them separated so that when it's time to scale, I can scale the web server independently or deploy it to another platform like Cloudflare Workers for serverless edge performance.
+
+## Issue Watchlist
+
+- [Router/Start issues](https://github.com/TanStack/router/issues) - TanStack Start is in RC.
+- [Devtools releases](https://github.com/TanStack/devtools/releases) - TanStack Devtools is in alpha and may still have breaking changes.
+- [Nitro v3 beta](https://nitro.build/blog/v3-beta) - This template is configured with Nitro v3 beta by default.
+- [Drizzle ORM v1 Beta](https://orm.drizzle.team/docs/relations-v1-v2) - Drizzle ORM v1 is in beta with relations v2.
+- [Better Auth experimental Drizzle adapter](https://github.com/better-auth/better-auth/pull/6913) - We're using a separate branch of Better Auth's Drizzle adapter that supports Drizzle relations v2.
+- [Vite+ issues](https://github.com/voidzero-dev/vite-plus/issues) - Vite+ is in alpha.
+
+### Pitfalls
+
+- The server and web app **must** be deployed on the same host using path-based routing (e.g., `app.example.com/app` + `app.example.com/server`). This uses `SameSite=Strict` cookies and avoids Safari ITP issues entirely. See [Better Auth cookie docs](https://better-auth.com/docs/concepts/cookies#safari-itp-and-cross-domain-setups) for context.
+- This implementation does not include security headers by default. You should add the following headers in production for improved security:
+  - `Content-Security-Policy`
+  - `Strict-Transport-Security`
+  - `X-Frame-Options`
+  - `X-Content-Type-Options: nosniff`
+  - `Referrer-Policy`
+  - `Permissions-Policy`
+
+- Builds are slower and more bloated in general because Vite Plus does not have a [`turbo prune`](https://turborepo.dev/docs/reference/prune) alternative
+  - See this related issue: https://github.com/voidzero-dev/vite-plus/issues/839
+
+- On a similar note, there isn't an elegant way to install `vp` in Dockerfile images, so you need to manually bump the desired `vp` version in /apps/\*/Dockerfile
+
+- There is a hydration error when navigating to an i18n subpath like `/de`, but it subsides in subsequent navigations.
+  - Need to investigate further, but otherwise, I haven't encountered any app-breaking bugs with it.
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change. If there are any bugs, please open an issue.
+
+To get started, fork the repo, make your changes, add, commit, and push your changes to your fork. Then, open a pull request. If you're new to GitHub, [this tutorial](https://www.freecodecamp.org/news/how-to-make-your-first-pull-request-on-github-3) might help.
+
+You can support the project by giving it a star, sharing it with your friends, contributing to the project, and reporting any bugs you find.
+
+## Acknowledgements
+
+This repository builds on [mugnavo/tanstarter-plus](https://github.com/mugnavo/tanstarter-plus).
+
+- it will continue to be a reference for new dependency features.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.

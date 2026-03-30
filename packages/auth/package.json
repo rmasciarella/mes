@@ -1,0 +1,28 @@
+{
+  "name": "@tsu-stack/auth",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#@/*": "./src/*.ts"
+  },
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "dependencies": {
+    "@better-auth/drizzle-adapter": "catalog:",
+    "@tsu-stack/logger": "workspace:*",
+    "better-auth": "catalog:",
+    "std-env": "catalog:"
+  },
+  "devDependencies": {
+    "@tsu-stack/env": "workspace:*",
+    "@tsu-stack/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "catalog:",
+    "@tanstack/react-start": "catalog:",
+    "@tsu-stack/db": "workspace:*"
+  }
+}

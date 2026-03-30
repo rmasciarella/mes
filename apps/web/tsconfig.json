@@ -1,0 +1,17 @@
+{
+  "extends": "@tsu-stack/tsconfig/tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["node", "vite/client", "mdx"],
+
+    /* Because paraglide.js breaks types during rebuilds on dev */
+    "allowJs": true
+  },
+  "mdx": {
+    "checkMdx": true
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}

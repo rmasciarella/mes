@@ -1,0 +1,29 @@
+/**
+ * When installing fonts, refer to the "Advanced" installation instructions in fontsource after installing the package.
+ * This is needed for vite to bundle the fonts correctly.
+ * @see {@link https://aaronjbecker.com/posts/fontsource-fontaine-tailwind-vite/}
+ *
+ * Using font-display: swap to prevent render-blocking and layout shifts.
+ * The font will only be used if already loaded, otherwise fallback is used.
+ * @see {@link https://savvy.co.il/en/blog/wordpress-speed/how-to-use-font-display-css/}
+ */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url(@fontsource-variable/inter/files/inter-latin-wght-normal.woff2)
+    format("woff2-variations");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@theme inline {
+  --font-sans: "Inter Variable", Inter, Helvetica, sans-serif;
+  --font-display: "Times New Roman", Times, serif;
+  --font-serif: Palatino, "Palatino Linotype", "Big Caslon", "Times New Roman", Times, serif;
+  --font-mono:
+    "Consolas", "Courier New", Courier, "Lucida Console", "Lucida Sans Typewriter",
+    "Lucida Typewriter", monospace;
+}
