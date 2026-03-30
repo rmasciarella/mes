@@ -58,7 +58,8 @@ An opinionated Vite Plus (Vite+) monorepo featuring Tanstack Start, Paraglide.js
 ### Prerequisites
 
 - **Node.js** ≥ 25 - install via [Node.js official website](https://nodejs.org/) or [nvm](https://github.com/nvm-sh/nvm)
-- **pnpm** ≥ 10 - install via `npm install -g pnpm`
+- **Vite Plus (vp)** - install via `curl -fsSL https://vite.plus | bash` (macOS/Linux) or `irm https://vite.plus/ps1 | iex` (Windows)
+- **pnpm** ≥ 10 - install via `vp install -g pnpm`
 - **Docker** - required for the local PostgreSQL database
 
 ### Installation
