@@ -17,10 +17,10 @@ export const appConfig = Object.freeze({
     basePath: new URL(ENV_WEB_ISOMORPHIC.VITE_WEB_URL).pathname,
     baseUrl: new URL(ENV_WEB_ISOMORPHIC.VITE_WEB_URL).origin,
     description:
-      "An opinionated Vite Plus (Vite+) monorepo featuring Tanstack Start, Paraglide.js (i18n), Hono, oRPC, drizzle-orm, better-auth, and more.",
+      "An opinionated Vite Plus (Vite+) monorepo featuring TanStack Start, Paraglide.js (i18n), Hono, oRPC, drizzle-orm, better-auth, and more.",
     emailSupport,
     jurisdictionCountry: "the Republic of the Philippines",
-    longName: "tsu!stack: Tanstack Start Monorepo Template",
+    longName: "tsu!stack: TanStack Start Monorepo Template",
     serverLocation: "Japan",
     shortName: "tsu!stack",
     url: ENV_WEB_ISOMORPHIC.VITE_WEB_URL,

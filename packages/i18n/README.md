@@ -2,7 +2,7 @@
 
 ## Usage
 
-### Tanstack Start
+### TanStack Start
 
 We have to create a `src/server.ts` file with the following content:
 
@@ -17,4 +17,4 @@ export default {
 };
 ```
 
-This will ensure that the i18n middleware is properly integrated into the server-side rendering process of Tanstack Start.
+This will ensure that the i18n middleware is properly integrated into the server-side rendering process of TanStack Start.

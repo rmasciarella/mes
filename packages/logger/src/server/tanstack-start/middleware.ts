@@ -176,7 +176,7 @@ export function tanstackStartRequestLoggerMiddleware(options: {
 }
 
 declare module "@tanstack/react-start" {
-  // @ts-expect-error - module augmentation to add our custom RouterAppContext to Tanstack Router's createRouter generic
+  // @ts-expect-error - module augmentation to add our custom RouterAppContext to TanStack Router's createRouter generic
   type Register = {
     functionMiddleware: readonly [ReturnType<typeof tanstackStartServerFnLoggerMiddleware>];
     requestMiddleware: readonly [ReturnType<typeof tanstackStartRequestLoggerMiddleware>];

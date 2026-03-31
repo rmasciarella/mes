@@ -33,7 +33,7 @@ export function getRouter() {
     ),
     // Prefetch <Link> on hover and touch
     defaultPreload: "intent",
-    // IMPORTANT: Let Tanstack Query handle data fetching & caching instead of Tanstack Router, default options are found in createQueryClient()
+    // IMPORTANT: Let TanStack Query handle data fetching & caching instead of TanStack Router, default options are found in createQueryClient()
     // https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#passing-all-loader-events-to-an-external-cache
     // This enables Route.loader logic to rerun on every navigation, so when fetching, use queryClient.ensureQueryData() to prevent unnecessary refetches and use cached data when available
     defaultPreloadStaleTime: 0,
@@ -63,7 +63,7 @@ export function getRouter() {
 }
 
 declare module "@tanstack/react-router" {
-  // @ts-expect-error - module augmentation to add our custom RouterAppContext to Tanstack Router's createRouter generic
+  // @ts-expect-error - module augmentation to add our custom RouterAppContext to TanStack Router's createRouter generic
   type Register = {
     router: ReturnType<typeof getRouter>;
   };

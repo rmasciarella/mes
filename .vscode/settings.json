@@ -18,7 +18,7 @@
   "js.preferences.importModuleSpecifierEnding": "minimal",
   "ts.preferences.importModuleSpecifierEnding": "minimal",
 
-  // Tanstack Start-specific settings
+  // TanStack Start-specific settings
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true
   },
