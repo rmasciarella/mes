@@ -1,12 +1,9 @@
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+if (typeof window === "undefined") {
+  const { dirname, resolve } = await import("node:path");
+  const { fileURLToPath } = await import("node:url");
+  const { config } = await import("@dotenvx/dotenvx");
 
-import { config } from "@dotenvx/dotenvx";
-
-(() => {
-  if (typeof window === "undefined") {
-    config({
-      path: resolve(dirname(fileURLToPath(import.meta.url)), "../.env"),
-    });
-  }
-})();
+  config({
+    path: resolve(dirname(fileURLToPath(import.meta.url)), "../.env"),
+  });
+}
