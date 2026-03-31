@@ -1,8 +1,6 @@
-# [tsu!stack](https://tsu-stack.tsu.moe/)
-
 <h1 align="center">
     <img width="120" height="120" src="https://github.com/tsu-moe/tsu-stack/blob/main/apps/web/public/logo192.png?raw=true" alt="tsu!stack Logo"><br>
-    tsu!stack
+    <a href="https://tsu-stack.tsu.moe/">tsu!stack</a>
 </h1>
 
 <p align="center">
@@ -25,21 +23,22 @@
 </p>
 
 <p align="center">
-  <a href="http://tsu-stack.tsu.moe/web" target="_blank">Live Demo (with Dockerfiles)</a> | <a href="http://tsu-stack-coolify.tsu.moe/web" target="_blank">Live Demo (with Coolify Docker Compose)</a>
+  <a href="http://tsu-stack.tsu.moe/web" target="_blank">🌐 Live Demo (with Dockerfiles)</a> | <a href="http://tsu-stack-coolify.tsu.moe/web" target="_blank">🌐 Live Demo (with Coolify Docker Compose)</a>
 </p>
 
 ## Table of Contents
 
+- [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
+  - [Setup](#setup)
   - [Running with Docker Locally](#running-with-docker-locally)
 - [Deployment](#deployment)
   - [Coolify](#coolify)
-    - [Separate Dockerfiles](#separate-dockerfiles)
+    - [Option 1: Separate Dockerfiles](#option-1-separate-dockerfiles)
       - [Server Deployment](#server-deployment)
       - [Web Deployment](#web-deployment)
-    - [Docker Compose](#docker-compose)
+    - [Option 2: Docker Compose](#option-2-docker-compose)
   - [Deploying to Other Platforms](#deploying-to-other-platforms)
   - [Subpath Support](#subpath-support)
 - [Environment Variables](#environment-variables)
@@ -53,16 +52,38 @@
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 
+## Tech Stack
+
+Here is a non-exhaustive list of the main technologies used in this project, along with their purposes and possible alternatives they replace:
+
+| Technology                                        | Purpose                                                                                                                                                                       | Replaces/Similar Alternatives                                      |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [**pnpm**](https://pnpm.io/)                      | Fast, disk-efficient package manager for Node.js with package catalogs for monorepo dependecy deduplication.                                                                  | npm, yarn                                                          |
+| [**Vite Plus (Vite+)**](https://viteplus.dev/)    | Unified toolchain for development, testing, and building the monorepo.                                                                                                        | Turborepo, Nx, Prettier, ESLint, husky, lint-staged, lefthook, tsc |
+| [**TanStack Start**](https://tanstack.com/router) | Modern full-stack React framework with support for SPA, SSR, ISR, and integrated with TanStack Query. It uses Vite's Nitro adapter for cross-platform deployment portability. | Next.js, Remix, React Router                                       |
+| [**Paraglide.js**](https://paraglide.dev/)        | Compiled internationalization (i18n) library for managing translations.                                                                                                       | i18next, next-intl                                                 |
+| [**Hono**](https://hono.dev/)                     | Lightweight web server framework built on web standards and is WinterCG-compliant for cross-platform portability.                                                             | Express.js, Fastify, Elysia.js                                     |
+| [**oRPC**](https://orpc.dev/)                     | RPC framework to define API routes and generate OpenAPI specs and documentation with [Scalar](https://scalar.com/).                                                           | tRPC                                                               |
+| [**Drizzle ORM**](https://orm.drizzle.team/)      | Type-safe and lightweight ORM for database interactions.                                                                                                                      | Prisma, TypeORM                                                    |
+| [**PostgreSQL**](https://www.postgresql.org/)     | Stable open-source relational database.                                                                                                                                       | MySQL, MariaDB                                                     |
+| [**Better Auth**](https://better-auth.com/)       | Self-hosted authentication framework with support for all major OAuth providers.                                                                                              | Auth.js                                                            |
+| [**Docker**](https://www.docker.com/)             | Containerization for local development and deployment.                                                                                                                        | Podman                                                             |
+| [**shadcn/ui**](https://ui.shadcn.com/)           | Accessible and customizable React component library.                                                                                                                          | Chakra UI, Material UI, Mantine UI                                 |
+
 ## Getting Started
 
 ### Prerequisites
 
-- **Node.js** ≥ 25 - install via [Node.js official website](https://nodejs.org/) or [nvm](https://github.com/nvm-sh/nvm)
-- **Vite Plus (vp)** - install via `curl -fsSL https://vite.plus | bash` (macOS/Linux) or `irm https://vite.plus/ps1 | iex` (Windows)
-- **pnpm** ≥ 10 - install via `vp install -g pnpm`
-- **Docker** - required for the local PostgreSQL database
+- **Node.js** ≥ 25
+  - install via [Node.js official website](https://nodejs.org/) or [nvm](https://github.com/nvm-sh/nvm)
+- **Vite Plus (vp)**
+  - install via `curl -fsSL https://vite.plus | bash` (macOS/Linux) or `irm https://vite.plus/ps1 | iex` (Windows)
+- **pnpm** ≥ 10
+  - install via `vp install -g pnpm`
+- **Docker**
+  - install it via their [official website](https://www.docker.com/)
 
-### Installation
+### Setup
 
 1. **Clone the repository and install dependencies:**
 
@@ -128,7 +149,7 @@ This project is designed to be deployed as separate applications for the server 
 
 Coolify can be used to deploy the server and web applications. Choose a strategy and follow the steps below to configure each app:
 
-#### Separate Dockerfiles
+#### Option 1: Separate Dockerfiles
 
 > [!NOTE]
 > This approach retains rolling updates in Coolify and has minimal downtime, but it is harder to scale compared to Docker Compose.
@@ -150,7 +171,7 @@ Coolify can be used to deploy the server and web applications. Choose a strategy
 
 Finally, set any required [environment variables](#environment-variables) in the "Environment Variables" tab for each application and press the "Deploy" button to start the deployment process.
 
-#### Docker Compose
+#### Option 2: Docker Compose
 
 > [!NOTE]
 > You can scale services using replicas - e.g. `docker-compose up --scale server=3` for the server.
