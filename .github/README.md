@@ -44,6 +44,7 @@
       - [Web Deployment](#web-deployment)
     - [Option 2: Docker Compose](#option-2-docker-compose)
   - [Cloudflare Workers](#cloudflare-workers)
+    - [Git-based CI/CD](#git-based-ci-cd)
   - [Deploying to Other Platforms](#deploying-to-other-platforms)
   - [Subpath Support](#subpath-support)
 - [Environment Variables](#environment-variables)
@@ -193,23 +194,37 @@ Finally, set any required [environment variables](#environment-variables) in the
 
 ### Cloudflare Workers
 
+> [!TIP]
+> You can clone the [`variant/merged-cloudflare` branch](https://github.com/tsu-moe/tsu-stack/tree/variant/merged-cloudflare) for a Cloudflare Workers-compatible setup.
+
 You will need to use the `@cloudflare/vite-plugin` adapter instead of `nitro`. See [this commit](https://github.com/tsu-moe/tsu-stack/commit/644ceb10a47836d8a3eb6f23c0b664e20207a9e0) for example changes.
 
 Then, you will need to switch to using a singleton `db` instance instead of a connection pool in the server app since Cloudflare Workers do not support long-lived connections. See [this commit](https://github.com/tsu-moe/tsu-stack/commit/8d6cf54b52e430ac6b3f840bbf5eecec040238b3) for example changes.
 
-You'll need to set the secrets manually in the Cloudflare dashboard before running the deployment commands.
+You'll need to set the secrets manually in the Cloudflare dashboard before running the deployment commands or via `pnpm wrangler secret put <VARIABLE_NAME>` one-by-one.
 
-Finally, you can deploy by running the following command in the `apps/web` directory:
+Finally, you can deploy by running the following commands:
 
 ```bash
-pnpm wrangler login # authenticate with your Cloudflare account
-cp packages/env/.env apps/web/.env # copy the shared env variables to the web app's env file for wrangler to read them
-cd apps/web # make sure you're in the web app directory since that's where the Cloudflare Worker entry point is
-pnpm wrangler deploy # deploys to your Cloudflare account
+pnpm wrangler login # authenticate with your Cloudflare account # copy the shared env variables to the web app's env file for wrangler to read them
+vp run deploy       # run the deploy task which uses wrangler to deploy the web app to Cloudflare Workers
 ```
 
 > [!CAUTION]
-> This repo does not have automatic GitHub CI/CD for the Cloudflare branch just yet, so you'll have to manually deploy with the `wrangler` CLI for now.
+> I do not recommend this way of deploying because it is prone to human error.
+
+#### Git-based CI/CD
+
+You can take advantage of Cloudflare's Git-based CI/CD by connecting your GitHub repository to your Cloudflare account and configuring the deployment settings to automatically deploy on pushes to your `main` branch.
+
+You will need to set up the _build environment variables_ and _variables and secrets_ manually in the Cloudflare dashboard in order for builds to succeed.
+
+| **Build Settings**                                                       | **Secrets & Variables**                                                         |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| ![Build Settings](./assets/img/cloudflare-deployment-settings-build.png) | ![Secrets & Variables](./assets/img/cloudflare-deployment-settings-secrets.png) |
+
+> [!NOTE]
+> There isn't an automatic way to do this with my current setup. So you'll need to link the repository first and trigger a failed build, _then_ set the variables and trigger another deployment for the changes to take effect.
 
 ### Deploying to Other Platforms
 
@@ -374,6 +389,12 @@ However, the benefit is singular deployments and lower memory usage for websites
   - Other than that, you may need to set up a root sitemap index that links to as many sitemaps for every app you deploy in multiple subpaths.
     - At the moment, the `__root.tsx` points to the subpath-specific sitemap, so you may want to consider pointing it to the root if you decide to opt into that architecture.
   - Alternatively, you can simply deploy the web app in the root so that the files are hosted in `example.com/robots.txt` and `example.com/sitemap.xml` instead of `example.com/web/robots.txt` and `example.com/web/sitemap.xml`.
+
+## Build Settings and Secrets
+
+| **Build Settings**                                     | **Secrets & Variables**                                     |
+| ------------------------------------------------------ | ----------------------------------------------------------- |
+| ![Build Settings](https://via.placeholder.com/300x200) | ![Secrets & Variables](https://via.placeholder.com/300x200) |
 
 ## Contributing
 
