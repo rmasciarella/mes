@@ -15,7 +15,7 @@ export const Route = createFileRoute("/{-$locale}/(root-layout)/(auth)/dashboard
 function RouteComponent() {
   const { user } = Route.useRouteContext();
 
-  const privateData = useQuery(orpc.private.data.queryOptions());
+  const privateData = useQuery(orpc.iam.data.queryOptions());
   const isClient = useIsClient();
 
   return (

@@ -1,0 +1,22 @@
+{
+  "name": "@tsu-stack/core",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#@/*": "./src/*.ts"
+  },
+  "exports": {
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "dependencies": {
+    "@tsu-stack/ts-extension": "workspace:*",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@tsu-stack/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

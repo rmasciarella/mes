@@ -16,11 +16,16 @@ import { cors } from "hono/cors";
 import { createContext } from "@tsu-stack/api/context";
 import { appRouter } from "@tsu-stack/api/routers/index";
 import { auth } from "@tsu-stack/auth/index";
-import { migrateDatabase } from "@tsu-stack/db";
+import { getCurrentUserHandler } from "@tsu-stack/core/iam/application/query/get-current-user";
+import { type UserId } from "@tsu-stack/core/iam/domain/user-id.value-object";
+import { migrateDatabase, db } from "@tsu-stack/db";
+import { UserRepository } from "@tsu-stack/db/repositories";
 import { ENV_SERVER } from "@tsu-stack/env/server/env";
 import { LOGGER_CATEGORIES_SERVER, getLogger } from "@tsu-stack/logger/server";
 import { honoLoggerMiddlewareChain } from "@tsu-stack/logger/server/hono/middleware";
 
+import { InProcessEventDispatcher } from "#@/infrastructure/events/in-process-event-dispatcher";
+import { InProcessMediator } from "#@/infrastructure/mediator/in-process-mediator";
 import "#@/shared/lib/logger";
 
 const logger = getLogger(LOGGER_CATEGORIES_SERVER.SERVER);
@@ -142,8 +147,29 @@ export const rpcHandler = new RPCHandler(appRouter, {
   plugins: [],
 });
 
+// --- Composition Root ---
+const eventDispatcher = new InProcessEventDispatcher();
+const userRepo = new UserRepository(db);
+
+const mediator = new InProcessMediator().register(
+  "GetCurrentUser",
+  getCurrentUserHandler({ userRepo }),
+);
+
 app.use("/*", async (c, next) => {
-  const context = await createContext({ context: c, logger });
+  const context = await createContext({
+    context: c,
+    logger,
+    mediator,
+    events: eventDispatcher,
+    auth: {
+      async getSession(headers) {
+        const result = await auth.api.getSession({ headers });
+        if (!result) return null;
+        return { ...result, user: { ...result.user, id: result.user.id as UserId } };
+      },
+    },
+  });
 
   // oRPC at /rpc/*
   const rpcResult = await rpcHandler.handle(c.req.raw, {

@@ -1,11 +1,11 @@
 import { type RouterClient } from "@orpc/server";
 
 import { healthRouter } from "#@/routers/health/index";
-import { privateRouter } from "#@/routers/private/index";
+import { iamRouter } from "#@/routers/iam/index";
 
 export const appRouter = {
   health: healthRouter,
-  private: privateRouter,
+  iam: iamRouter,
 };
 
 export type AppRouter = typeof appRouter;

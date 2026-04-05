@@ -11,8 +11,8 @@ import { LOGGER_CATEGORIES_SERVER, getLogger } from "@tsu-stack/logger/server";
 
 const logger = getLogger(LOGGER_CATEGORIES_SERVER.SERVER_DB);
 
+import { relations } from "#@/schema/iam/relations";
 import * as schemas from "#@/schema/index";
-import { relations } from "#@/schema/relations";
 
 export * from "drizzle-orm/sql";
 

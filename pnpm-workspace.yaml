@@ -1,5 +1,6 @@
 packages:
   - apps/*
+  - lib/*
   - packages/*
   - tools/*
 
@@ -50,7 +51,7 @@ catalog:
   "@tanstack/zod-adapter": ^1.166.9
   "@types/babel__core": ^7.20.5
   "@types/mdx": ^2.0.13
-  "@types/node": ^25.5.0
+  "@types/node": ^25.5.2
   "@types/react": ^19.2.14
   "@types/react-dom": ^19.2.3
   "@vitejs/plugin-react": ^6.0.1
